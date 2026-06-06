@@ -1,4 +1,3 @@
-```tsx
 import { useState } from "react";
 
 const API_URL =
@@ -106,14 +105,17 @@ export default function App() {
       }
 
       setResult(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("FETCH ERROR:", err);
 
-      setError(err.message || "Ошибка");
+      const message =
+        err instanceof Error ? err.message : "Ошибка";
+
+      setError(message);
 
       setDebugData({
         request: requestBody,
-        error: err.message,
+        error: message,
       });
     } finally {
       setLoading(false);
@@ -347,4 +349,4 @@ export default function App() {
     </div>
   );
 }
-```
+
