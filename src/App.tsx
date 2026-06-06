@@ -1,21 +1,21 @@
 import { useState } from "react";
 
 const API_URL =
-"https://active-telephony-whatever-navigator.trycloudflare.com/evaluate";
+"https://muscles-caroline-sports-tournaments.trycloudflare.com/evaluate";
 
 const MODELS = [
-{
-label: "Gemini Flash",
-value: "google/gemini-flash-1.5:free",
-},
-{
-label: "DeepSeek R1",
-value: "deepseek/deepseek-r1:free",
-},
-{
-label: "DeepSeek Chat",
-value: "deepseek/deepseek-chat-v3-0324:free",
-},
+  {
+    label: "Gemini Flash",
+    value: "google/gemini-flash-1.5:free",
+  },
+  {
+    label: "DeepSeek R1",
+    value: "deepseek/deepseek-r1:free",
+  },
+  {
+    label: "DeepSeek Chat",
+    value: "deepseek/deepseek-chat-v3-0324:free",
+  },
 ];
 
 const DEFAULT_CRITERIA = [
