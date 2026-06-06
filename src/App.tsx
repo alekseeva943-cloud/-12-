@@ -5,8 +5,8 @@ const API_URL =
 
 const MODELS = [
   {
-    label: "Gemini Flash",
-    value: "google/gemini-flash-1.5:free",
+    label: "Хуета",
+    value: "deepseek/deepseek-r1:free"",
   },
   {
     label: "DeepSeek R1",
