@@ -6,7 +6,7 @@ const API_URL =
 const MODELS = [
   {
     label: "Хуета",
-    value: "deepseek/deepseek-r1:free"",
+    value: "deepseek/deepseek-r1:free",
   },
   {
     label: "DeepSeek R1",
