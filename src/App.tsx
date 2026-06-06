@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const API_URL =
-"https://findings-reload-stylus-valley.trycloudflare.com/evaluate";
+"https://active-telephony-whatever-navigator.trycloudflare.com/evaluate";
 
 const MODELS = [
 {
