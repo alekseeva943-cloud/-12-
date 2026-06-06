@@ -63,7 +63,6 @@ setError("Введите промт");
 return;
 }
 
-```
 setLoading(true);
 setError("");
 setResult(null);
@@ -118,7 +117,7 @@ try {
 } finally {
   setLoading(false);
 }
-```
+
 
 }
 
@@ -144,9 +143,9 @@ fontSize: "36px",
 marginBottom: "10px",
 }}
 >
-AI Prompt Evaluator </h1>
+SUKA TEST 777 </h1>
 
-```
+
     <p
       style={{
         opacity: 0.7,
