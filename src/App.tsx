@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const API_URL =
-"https://year-hostels-assignments-happening.trycloudflare.com/evaluate";
+"https://findings-reload-stylus-valley.trycloudflare.com/evaluate";
 
 const MODELS = [
 {
