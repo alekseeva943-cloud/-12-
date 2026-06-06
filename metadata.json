@@ -1,0 +1,6 @@
+{
+  "name": "Prompt Evaluator",
+  "description": "Простое одностраничное веб-приложение для проверки и оценки AI-промтов по критериям через backend API.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
