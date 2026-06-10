@@ -1,12 +1,28 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const API_URL =
-  "https://cap-advertise-encouraging-matrix.trycloudflare.com/evaluate";
+  "https://fact-cars-file-gaps.trycloudflare.com/evaluate";
 
 const MODELS = [
   {
     label: "OpenRouter Free",
     value: "openrouter/free",
+  },
+  {
+    label: "Nex N2 Pro",
+    value: "nex-agi/nex-n2-pro:free",
+  },
+  {
+    label: "GPT OSS 20B",
+    value: "openai/gpt-oss-20b:free",
+  },
+  {
+    label: "Llama 3.3 70B",
+    value: "meta-llama/llama-3.3-70b:free",
+  },
+  {
+    label: "DeepSeek R1 Distill",
+    value: "deepseek/deepseek-r1-distill:free",
   },
 ];
 
@@ -41,6 +57,16 @@ const TEST_DIALOGS = [
   [{ speaker: "user", text: "Объясни подробнее" }],
 ];
 
+const LIVE_LOGS = [
+  "⏳ Отправка запроса в OpenRouter...",
+  "🤖 Модель анализирует промт...",
+  "🧠 Проверка логики и контекста...",
+  "📊 Анализ стресс-сценариев...",
+  "🔍 Проверка структуры диалога...",
+  "⚙ Формирование итоговой оценки...",
+  "📡 Ожидание ответа модели...",
+];
+
 export default function App() {
   const [prompt, setPrompt] = useState("");
   const [model, setModel] = useState(MODELS[0].value);
@@ -49,11 +75,50 @@ export default function App() {
   const [error, setError] = useState("");
   const [debugData, setDebugData] = useState<any>(null);
 
+  const [currentLog, setCurrentLog] = useState("");
+  const [elapsedSeconds, setElapsedSeconds] = useState(0);
+
+  const abortControllerRef = useRef<AbortController | null>(
+    null
+  );
+
+  useEffect(() => {
+    if (!loading) {
+      setCurrentLog("");
+      setElapsedSeconds(0);
+      return;
+    }
+
+    let logIndex = 0;
+
+    setCurrentLog(LIVE_LOGS[0]);
+
+    const logInterval = setInterval(() => {
+      logIndex =
+        (logIndex + 1) % LIVE_LOGS.length;
+
+      setCurrentLog(LIVE_LOGS[logIndex]);
+    }, 2000);
+
+    const timerInterval = setInterval(() => {
+      setElapsedSeconds((prev) => prev + 1);
+    }, 1000);
+
+    return () => {
+      clearInterval(logInterval);
+      clearInterval(timerInterval);
+    };
+  }, [loading]);
+
   async function handleEvaluate() {
     if (!prompt.trim()) {
       setError("Введите промт");
       return;
     }
+
+    const controller = new AbortController();
+
+    abortControllerRef.current = controller;
 
     setLoading(true);
     setError("");
@@ -75,6 +140,7 @@ export default function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(requestBody),
+        signal: controller.signal,
       });
 
       const data = await response.json();
@@ -100,18 +166,30 @@ export default function App() {
     } catch (err: unknown) {
       console.error("FETCH ERROR:", err);
 
-      const message =
-        err instanceof Error ? err.message : "Ошибка";
+      if (
+        err instanceof Error &&
+        err.name === "AbortError"
+      ) {
+        setError("Процесс остановлен пользователем");
+      } else {
+        const message =
+          err instanceof Error ? err.message : "Ошибка";
 
-      setError(message);
+        setError(message);
 
-      setDebugData({
-        request: requestBody,
-        error: message,
-      });
+        setDebugData({
+          request: requestBody,
+          error: message,
+        });
+      }
     } finally {
       setLoading(false);
     }
+  }
+
+  function handleStop() {
+    abortControllerRef.current?.abort();
+    setLoading(false);
   }
 
   return (
@@ -185,7 +263,7 @@ export default function App() {
           <div
             style={{
               display: "flex",
-              gap: "20px",
+              gap: "16px",
               marginBottom: "10px",
               flexWrap: "wrap",
               alignItems: "center",
@@ -194,6 +272,7 @@ export default function App() {
             <select
               value={model}
               onChange={(e) => setModel(e.target.value)}
+              disabled={loading}
               style={{
                 background: "#1e293b",
                 color: "white",
@@ -202,6 +281,7 @@ export default function App() {
                 fontSize: "15px",
                 minWidth: "240px",
                 border: "1px solid #475569",
+                opacity: loading ? 0.7 : 1,
               }}
             >
               {MODELS.map((m) => (
@@ -221,19 +301,38 @@ export default function App() {
                 border: "none",
                 borderRadius: "12px",
                 padding: "14px 28px",
-                cursor: loading ? "not-allowed" : "pointer",
+                cursor: loading
+                  ? "not-allowed"
+                  : "pointer",
                 fontSize: "16px",
                 fontWeight: "bold",
                 boxShadow:
                   "0 10px 25px rgba(59,130,246,0.25)",
                 opacity: loading ? 0.7 : 1,
-                transition: "0.2s",
               }}
             >
               {loading
-                ? "Выполняется AI-анализ..."
+                ? "AI-анализ выполняется..."
                 : "Запустить стресс-тест"}
             </button>
+
+            {loading && (
+              <button
+                onClick={handleStop}
+                style={{
+                  background: "#7f1d1d",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "12px",
+                  padding: "14px 24px",
+                  cursor: "pointer",
+                  fontSize: "15px",
+                  fontWeight: "bold",
+                }}
+              >
+                Остановить
+              </button>
+            )}
           </div>
 
           {loading && (
@@ -243,19 +342,28 @@ export default function App() {
                 background: "#0f172a",
                 border: "1px solid #1e293b",
                 borderRadius: "14px",
-                padding: "16px",
-                lineHeight: 1.9,
+                padding: "18px",
                 color: "#67e8f9",
-                fontSize: "14px",
               }}
             >
-              ⏳ Анализ промта...
-              <br />
-              🤖 Генерация стресс-сценариев...
-              <br />
-              🧠 Проверка логики и устойчивости...
-              <br />
-              📊 Формирование итоговой оценки...
+              <div
+                style={{
+                  fontSize: "14px",
+                  marginBottom: "12px",
+                  lineHeight: 1.8,
+                }}
+              >
+                {currentLog}
+              </div>
+
+              <div
+                style={{
+                  fontSize: "13px",
+                  opacity: 0.7,
+                }}
+              >
+                ⏱ Время анализа: {elapsedSeconds} сек
+              </div>
             </div>
           )}
         </div>
@@ -420,41 +528,6 @@ export default function App() {
                 </pre>
               </details>
             </div>
-          </div>
-        )}
-
-        {debugData && (
-          <div
-            style={{
-              marginTop: "30px",
-              background: "#020617",
-              padding: "20px",
-              borderRadius: "14px",
-              overflow: "auto",
-            }}
-          >
-            <details>
-              <summary
-                style={{
-                  cursor: "pointer",
-                  color: "#67e8f9",
-                  marginBottom: "16px",
-                }}
-              >
-                Debug Console
-              </summary>
-
-              <pre
-                style={{
-                  whiteSpace: "pre-wrap",
-                  fontSize: "12px",
-                  color: "#cbd5e1",
-                  lineHeight: 1.5,
-                }}
-              >
-                {JSON.stringify(debugData, null, 2)}
-              </pre>
-            </details>
           </div>
         )}
       </div>
