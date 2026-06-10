@@ -1,20 +1,12 @@
 import { useState } from "react";
 
 const API_URL =
-  "https://muscles-caroline-sports-tournaments.trycloudflare.com/evaluate";
+  "https://tongue-puzzles-tim-licensing.trycloudflare.com/evaluate";
 
 const MODELS = [
   {
-    label: "Хуета",
-    value: "deepseek/deepseek-r1:free",
-  },
-  {
-    label: "DeepSeek R1",
-    value: "deepseek/deepseek-r1:free",
-  },
-  {
-    label: "DeepSeek Chat",
-    value: "deepseek/deepseek-chat-v3-0324:free",
+    label: "OpenRouter Free",
+    value: "openrouter/free",
   },
 ];
 
@@ -134,88 +126,112 @@ export default function App() {
     >
       <div
         style={{
-          maxWidth: "900px",
+          maxWidth: "950px",
           margin: "0 auto",
         }}
       >
         <h1
           style={{
-            fontSize: "36px",
-            marginBottom: "10px",
+            fontSize: "38px",
+            marginBottom: "12px",
+            fontWeight: "bold",
           }}
         >
-          SUKA TEST 777
+          AI Prompt Stress Test
         </h1>
 
         <p
           style={{
             opacity: 0.7,
             marginBottom: "30px",
+            fontSize: "16px",
+            lineHeight: 1.6,
           }}
         >
-          Проверка AI-промтов через OpenRouter
+          Автоматическое стресс-тестирование AI-промтов
+          с анализом качества диалога,
+          устойчивости и логики работы.
         </p>
-
-        <textarea
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          placeholder="Вставьте ваш промт..."
-          style={{
-            width: "100%",
-            minHeight: "220px",
-            background: "#1e293b",
-            border: "1px solid #334155",
-            borderRadius: "12px",
-            padding: "20px",
-            color: "white",
-            fontSize: "16px",
-            resize: "vertical",
-            marginBottom: "20px",
-          }}
-        />
 
         <div
           style={{
-            display: "flex",
-            gap: "20px",
-            marginBottom: "20px",
+            background: "#111827",
+            border: "1px solid #1f2937",
+            borderRadius: "20px",
+            padding: "24px",
+            marginBottom: "24px",
+            boxShadow: "0 0 30px rgba(0,0,0,0.25)",
           }}
         >
-          <select
-            value={model}
-            onChange={(e) => setModel(e.target.value)}
+          <textarea
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            placeholder="Вставьте ваш промт..."
             style={{
+              width: "100%",
+              minHeight: "240px",
               background: "#1e293b",
-              color: "white",
               border: "1px solid #334155",
-              padding: "12px",
-              borderRadius: "10px",
-              fontSize: "16px",
-            }}
-          >
-            {MODELS.map((m) => (
-              <option key={m.value} value={m.value}>
-                {m.label}
-              </option>
-            ))}
-          </select>
-
-          <button
-            onClick={handleEvaluate}
-            disabled={loading}
-            style={{
-              background: "#06b6d4",
+              borderRadius: "14px",
+              padding: "20px",
               color: "white",
-              border: "none",
-              borderRadius: "10px",
-              padding: "12px 24px",
-              cursor: "pointer",
               fontSize: "16px",
-              fontWeight: "bold",
+              resize: "vertical",
+              marginBottom: "24px",
+              boxSizing: "border-box",
+            }}
+          />
+
+          <div
+            style={{
+              display: "flex",
+              gap: "20px",
+              marginBottom: "10px",
+              flexWrap: "wrap",
             }}
           >
-            {loading ? "Анализ..." : "Запустить стресс-тест"}
-          </button>
+            <select
+              value={model}
+              onChange={(e) => setModel(e.target.value)}
+              style={{
+                background: "#1e293b",
+                color: "white",
+                padding: "14px 18px",
+                borderRadius: "12px",
+                fontSize: "15px",
+                minWidth: "240px",
+                border: "1px solid #475569",
+              }}
+            >
+              {MODELS.map((m) => (
+                <option key={m.value} value={m.value}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+
+            <button
+              onClick={handleEvaluate}
+              disabled={loading}
+              style={{
+                background:
+                  "linear-gradient(135deg, #06b6d4, #3b82f6)",
+                color: "white",
+                border: "none",
+                borderRadius: "12px",
+                padding: "14px 28px",
+                cursor: "pointer",
+                fontSize: "16px",
+                fontWeight: "bold",
+                boxShadow:
+                  "0 10px 25px rgba(59,130,246,0.25)",
+              }}
+            >
+              {loading
+                ? "Анализ..."
+                : "Запустить стресс-тест"}
+            </button>
+          </div>
         </div>
 
         {error && (
@@ -244,15 +260,51 @@ export default function App() {
               style={{
                 background: "#1e293b",
                 padding: "24px",
-                borderRadius: "16px",
+                borderRadius: "18px",
                 marginBottom: "20px",
               }}
             >
-              <h2>Общая оценка: {result.overall_score}/10</h2>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  marginBottom: "14px",
+                  flexWrap: "wrap",
+                  gap: "16px",
+                }}
+              >
+                <h2
+                  style={{
+                    margin: 0,
+                    fontSize: "28px",
+                  }}
+                >
+                  Общая оценка
+                </h2>
+
+                <div
+                  style={{
+                    background:
+                      result.overall_score >= 8
+                        ? "#065f46"
+                        : result.overall_score >= 5
+                        ? "#92400e"
+                        : "#7f1d1d",
+                    padding: "10px 18px",
+                    borderRadius: "999px",
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                  }}
+                >
+                  {result.overall_score}/10
+                </div>
+              </div>
 
               <p
                 style={{
-                  opacity: 0.8,
+                  opacity: 0.85,
+                  lineHeight: 1.7,
                 }}
               >
                 {result.overall_comment}
@@ -260,8 +312,9 @@ export default function App() {
 
               <p
                 style={{
-                  marginTop: "10px",
+                  marginTop: "14px",
                   color: "#67e8f9",
+                  lineHeight: 1.6,
                 }}
               >
                 {result.primitive_reason}
@@ -275,26 +328,34 @@ export default function App() {
               }}
             >
               {result.criteria_results?.map((item: any) => (
-                <div
+                <details
                   key={item.name}
                   style={{
                     background: "#1e293b",
-                    padding: "20px",
                     borderRadius: "14px",
+                    padding: "18px",
                   }}
                 >
-                  <h3>
+                  <summary
+                    style={{
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                      fontSize: "16px",
+                    }}
+                  >
                     {item.name} — {item.score}/10
-                  </h3>
+                  </summary>
 
                   <p
                     style={{
-                      opacity: 0.8,
+                      opacity: 0.85,
+                      marginTop: "16px",
+                      lineHeight: 1.6,
                     }}
                   >
                     {item.comment}
                   </p>
-                </div>
+                </details>
               ))}
             </div>
 
@@ -306,16 +367,32 @@ export default function App() {
                 borderRadius: "14px",
               }}
             >
-              <h3>Рекомендации</h3>
+              <details>
+                <summary
+                  style={{
+                    cursor: "pointer",
+                    fontWeight: "bold",
+                    fontSize: "18px",
+                    marginBottom: "16px",
+                  }}
+                >
+                  Рекомендации
+                </summary>
 
-              <pre
-                style={{
-                  whiteSpace: "pre-wrap",
-                  color: "#cbd5e1",
-                }}
-              >
-                {JSON.stringify(result.recommendations, null, 2)}
-              </pre>
+                <pre
+                  style={{
+                    whiteSpace: "pre-wrap",
+                    color: "#cbd5e1",
+                    lineHeight: 1.6,
+                  }}
+                >
+                  {JSON.stringify(
+                    result.recommendations,
+                    null,
+                    2
+                  )}
+                </pre>
+              </details>
             </div>
           </div>
         )}
@@ -330,23 +407,31 @@ export default function App() {
               overflow: "auto",
             }}
           >
-            <h3 style={{ marginBottom: "12px", color: "#67e8f9" }}>
-              Debug Console
-            </h3>
+            <details>
+              <summary
+                style={{
+                  cursor: "pointer",
+                  color: "#67e8f9",
+                  marginBottom: "16px",
+                }}
+              >
+                Debug Console
+              </summary>
 
-            <pre
-              style={{
-                whiteSpace: "pre-wrap",
-                fontSize: "12px",
-                color: "#cbd5e1",
-              }}
-            >
-              {JSON.stringify(debugData, null, 2)}
-            </pre>
+              <pre
+                style={{
+                  whiteSpace: "pre-wrap",
+                  fontSize: "12px",
+                  color: "#cbd5e1",
+                  lineHeight: 1.5,
+                }}
+              >
+                {JSON.stringify(debugData, null, 2)}
+              </pre>
+            </details>
           </div>
         )}
       </div>
     </div>
   );
 }
-
