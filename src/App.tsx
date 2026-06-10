@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 const API_URL =
-  "https://tongue-puzzles-tim-licensing.trycloudflare.com/evaluate";
+  "https://cap-advertise-encouraging-matrix.trycloudflare.com/evaluate";
 
 const MODELS = [
   {
@@ -188,6 +188,7 @@ export default function App() {
               gap: "20px",
               marginBottom: "10px",
               flexWrap: "wrap",
+              alignItems: "center",
             }}
           >
             <select
@@ -220,18 +221,43 @@ export default function App() {
                 border: "none",
                 borderRadius: "12px",
                 padding: "14px 28px",
-                cursor: "pointer",
+                cursor: loading ? "not-allowed" : "pointer",
                 fontSize: "16px",
                 fontWeight: "bold",
                 boxShadow:
                   "0 10px 25px rgba(59,130,246,0.25)",
+                opacity: loading ? 0.7 : 1,
+                transition: "0.2s",
               }}
             >
               {loading
-                ? "Анализ..."
+                ? "Выполняется AI-анализ..."
                 : "Запустить стресс-тест"}
             </button>
           </div>
+
+          {loading && (
+            <div
+              style={{
+                marginTop: "18px",
+                background: "#0f172a",
+                border: "1px solid #1e293b",
+                borderRadius: "14px",
+                padding: "16px",
+                lineHeight: 1.9,
+                color: "#67e8f9",
+                fontSize: "14px",
+              }}
+            >
+              ⏳ Анализ промта...
+              <br />
+              🤖 Генерация стресс-сценариев...
+              <br />
+              🧠 Проверка логики и устойчивости...
+              <br />
+              📊 Формирование итоговой оценки...
+            </div>
+          )}
         </div>
 
         {error && (
